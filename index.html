@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Ven a cenar conmigo · E&V — Otoño Gourmet</title>
+  <meta name="theme-color" content="#3b2a22" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#12100f; --card:#1b1614; --ink:#f2e8e1; --muted:#d9c8bb;
+      --accent:#c17b2e; --accent-2:#8c5a2f; --good:#7fb77e; --bad:#d96b6b;
+    }
+    *{box-sizing:border-box} html,body{height:100%}
+    body{
+      margin:0; color:var(--ink);
+      font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+      background:
+        radial-gradient(1200px 800px at 20% 10%, #1c1511 0%, transparent 60%),
+        radial-gradient(1200px 800px at 80% 90%, #221912 0%, transparent 60%),
+        var(--bg);
+      overflow-x:hidden;
+    }
+
+    .hero{position:relative;padding:56px 20px 24px;text-align:center;overflow:hidden}
+    .brand{font-family:"Playfair Display",serif;font-size: clamp(28px, 5vw, 44px);letter-spacing:.5px;line-height:1.1}
+    .brand em{font-style:normal;color:var(--accent);border-bottom:1px solid rgba(0,0,0,.25);padding-bottom:4px}
+    .sub{margin-top:10px;color:var(--muted);font-size:clamp(14px, 2.5vw, 16px)}
+    .hosts{margin-top:8px;font-weight:600;letter-spacing:.6px}
+    .date{margin-top:6px;opacity:.8;font-size:14px}
+
+    .card{
+      width:min(880px, 92vw);margin:24px auto 56px;background:linear-gradient(180deg, #221a15, #171311);
+      border:1px solid #2a211c;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.04);overflow:hidden
+    }
+    .progress{height:6px;background:#0f0d0b;width:100%;position:relative}
+    .bar{position:absolute;left:0;top:0;bottom:0;width:0%;background:linear-gradient(90deg, var(--accent), var(--accent-2));transition:width .5s ease}
+    .content{padding:22px clamp(16px, 5vw, 36px) 28px}
+
+    .step{display:none;animation:fade .35s ease} .step.active{display:block}
+    @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+    .q-title{font-family:"Playfair Display",serif;font-size: clamp(22px, 3.5vw, 28px);margin:10px 0 14px}
+    .q-help{color:var(--muted);font-size:14px;margin-bottom:18px}
+
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+    .chip{
+      border:1px solid #3a2f28;background:#15110f;padding:14px;border-radius:12px;cursor:pointer;
+      transition:transform .08s ease, border .2s ease, background .2s ease;display:flex;align-items:center;gap:10px;user-select:none
+    }
+    .chip:hover{transform:translateY(-1px)} .chip input{display:none}
+    .chip.selected{border-color:var(--accent);background:#1c1511}
+    .emoji{font-size:18px;opacity:.95}
+
+    .field{margin-top:12px}
+    .field label{display:block;margin-bottom:6px;color:var(--muted);font-size:14px}
+    .field input,.field textarea{
+      width:100%;padding:12px 14px;border-radius:10px;border:1px solid #3a2f28;background:#120f0e;color:var(--ink);outline:none
+    }
+    .field input:invalid{border-color:#a94442}
+    .field textarea{min-height:88px;resize:vertical}
+
+    .actions{margin-top:20px;display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+    .btn{
+      appearance:none;border:0;cursor:pointer;padding:12px 16px;border-radius:10px;font-weight:600;
+      background:linear-gradient(180deg, #2b221d, #201915);color:var(--ink);border:1px solid #3a2f28;box-shadow:inset 0 1px 0 rgba(255,255,255,.06);
+      transition:transform .06s ease, filter .2s ease, opacity .2s ease;
+    }
+    .btn:hover{filter:brightness(1.05)} .btn:active{transform:translateY(1px)}
+    .btn.primary{background:linear-gradient(180deg, #7a4c20, #5c3a1c);border-color:#8e5c2b}
+    .hint{color:var(--muted);font-size:12px;margin-top:6px}
+    .score{background:#15110f;border:1px dashed #3a2f28;border-radius:12px;padding:14px;margin-top:12px}
+
+    .leaf{position:fixed;top:-10vh;opacity:.18;pointer-events:none;font-size:24px;animation:fall 11s linear infinite}
+    .leaf:nth-child(2){left:20%;animation-duration:13s;font-size:20px}
+    .leaf:nth-child(3){left:40%;animation-duration:12s;font-size:26px}
+    .leaf:nth-child(4){left:60%;animation-duration:14s;font-size:22px}
+    .leaf:nth-child(5){left:80%;animation-duration:15s;font-size:28px}
+    @keyframes fall{0%{transform:translateY(-10vh) rotate(0)}100%{transform:translateY(120vh) rotate(360deg)}}
+
+    .footer{text-align:center;color:#a49386;opacity:.8;font-size:12px;margin:22px 0 40px}
+
+    .toast{
+      position:fixed;left:50%;bottom:24px;transform:translateX(-50%);
+      background:#2a221c;color:#f7ede4;border:1px solid #8e5c2b;border-radius:10px;
+      padding:10px 14px;font-size:14px;box-shadow:0 10px 30px rgba(0,0,0,.35);
+      opacity:0;pointer-events:none;transition:opacity .25s ease;z-index:9999
+    }
+    .toast.show{opacity:1}
+  </style>
+</head>
+<body>
+  <div class="leaf">🍂</div><div class="leaf">🍁</div><div class="leaf">🍂</div><div class="leaf">🍁</div><div class="leaf">🍂</div>
+
+  <header class="hero">
+    <div class="brand">Ven a cenar conmigo · <em>Otoño Gourmet</em></div>
+    <div class="sub">Minijuego de bienvenida — estética elegante, sabores de temporada</div>
+    <div class="hosts">Anfitriones: <strong>E&amp;V</strong></div>
+    <div class="date">La cena: día 9</div>
+  </header>
+
+  <main class="card" role="main">
+    <div class="progress"><div class="bar" id="bar"></div></div>
+    <div class="content">
+
+      <!-- Paso 0 -->
+      <section class="step active" data-step="0">
+        <h2 class="q-title">Bienvenid@ a la Cena Misteriosa ✨</h2>
+        <p class="q-help">Tus elecciones sellarán tu destino culinario.</p>
+        <div class="field">
+          <label for="nombre">Tu nombre</label>
+          <input id="nombre" placeholder="Ej.: Lucía" required />
+        </div>
+        <div class="field">
+          <label for="contacto">Contacto (opcional)</label>
+          <input id="contacto" placeholder="Teléfono o email" />
+        </div>
+        <div class="actions">
+          <button class="btn primary" id="startBtn">Entrar en la cena</button>
+        </div>
+      </section>
+
+      <!-- Paso 1 -->
+      <section class="step" data-step="1">
+        <h2 class="q-title">Las sombras del sabor</h2>
+        <p class="q-help">Cuando llega el otoño, ¿qué prefieres?</p>
+        <div class="grid">
+          <label class="chip"><input type="radio" name="otono" value="Guisos calientes"><span class="emoji">🍲</span> Guisos calientes</label>
+          <label class="chip"><input type="radio" name="otono" value="Ensaladas ligeras"><span class="emoji">🥗</span> Ensaladas ligeras</label>
+          <label class="chip"><input type="radio" name="otono" value="Tapas con vino"><span class="emoji">🍷</span> Tapas con vino</label>
+          <label class="chip"><input type="radio" name="otono" value="Sorpresa del chef"><span class="emoji">🎩</span> Sorpresa del chef</label>
+        </div>
+        <div class="actions">
+          <button class="btn" data-prev>Volver</button>
+          <button class="btn primary" data-next>Siguiente</button>
+        </div>
+      </section>
+
+      <!-- Paso 2 -->
+      <section class="step" data-step="2">
+        <h2 class="q-title">El hechizo de las alergias</h2>
+        <p class="q-help">Marca los ingredientes que debamos evitar:</p>
+        <div class="grid">
+          <label class="chip"><input type="checkbox" name="alergias" value="Frutos secos"><span class="emoji">🥜</span> Frutos secos</label>
+          <label class="chip"><input type="checkbox" name="alergias" value="Lactosa"><span class="emoji">🥛</span> Lactosa</label>
+          <label class="chip"><input type="checkbox" name="alergias" value="Marisco"><span class="emoji">🍤</span> Marisco</label>
+          <label class="chip"><input type="checkbox" name="alergias" value="Gluten"><span class="emoji">🌾</span> Gluten</label>
+          <label class="chip"><input type="checkbox" name="alergias" value="Huevos"><span class="emoji">🥚</span> Huevos</label>
+          <label class="chip"><input type="checkbox" name="alergias" value="Soja"><span class="emoji">🫘</span> Soja</label>
+          <label class="chip"><input type="checkbox" name="alergias" value="Ninguna"><span class="emoji">🛡️</span> Ninguna</label>
+          <label class="chip" id="otrosChip"><input type="checkbox" name="alergias" value="Otros"><span class="emoji">✍️</span> Otros</label>
+        </div>
+        <div class="field" id="otrosField" style="display:none">
+          <label for="otrosTxt">Especifica otros alérgenos o intolerancias</label>
+          <input id="otrosTxt" placeholder="Ej.: apio, sésamo, sulfitos, etc." />
+        </div>
+        <div class="actions">
+          <button class="btn" data-prev>Volver</button>
+          <button class="btn primary" data-next>Siguiente</button>
+        </div>
+      </section>
+
+      <!-- Paso 3 -->
+      <section class="step" data-step="3">
+        <h2 class="q-title">El plato maldito</h2>
+        <p class="q-help">¿Qué NO soportas comer?</p>
+        <div class="field"><input id="noMeGusta" placeholder="Ej.: aceitunas, cilantro" /></div>
+        <div class="actions"><button class="btn" data-prev>Volver</button><button class="btn primary" data-next>Siguiente</button></div>
+      </section>
+
+      <!-- Paso 4 -->
+      <section class="step" data-step="4">
+        <h2 class="q-title">Juicio del jurado</h2>
+        <p class="q-help">Cuéntanos manías o notas.</p>
+        <div class="field"><textarea id="manias" placeholder="Ej.: poco hecho, nada picante..."></textarea></div>
+        <div class="actions"><button class="btn" data-prev>Volver</button><button class="btn primary" data-next>Siguiente</button></div>
+      </section>
+
+      <!-- Paso 5 -->
+      <section class="step" data-step="5">
+        <h2 class="q-title">Tu destino culinario</h2>
+        <div class="score" id="resumen"></div>
+        <p class="hint">Al pulsar “Enviar”, tus respuestas llegarán a E&V.</p>
+        <div class="actions"><button class="btn" data-prev>Volver</button><button class="btn primary" id="submitBtn">Enviar mi destino</button></div>
+        <p class="hint" id="feedback"></p>
+      </section>
+
+    </div>
+  </main>
+
+  <div class="footer">© Ven a cenar conmigo · E&V — Otoño Gourmet</div>
+  <div id="toast" class="toast"></div>
+
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const GAS_ENDPOINT = "https://script.google.com/macros/s/AKfycbwYISJT9GsWdz9idC3X21fU5KgCZajwWp_bun_Yb_xDMc9Vj_spda-W7A7MzLY0IqY9Eg/exec";
+
+    const $ = s => document.querySelector(s);
+    const $$ = s => Array.from(document.querySelectorAll(s));
+    const toast = $("#toast");
+    const showToast = m => { toast.textContent = m; toast.classList.add("show"); setTimeout(()=>toast.classList.remove("show"), 2000); };
+
+    /* ===== CHIPS con 'change' (no togglear manualmente) ===== */
+    $$(".chip input").forEach(inp=>{
+      inp.addEventListener("change", ()=>{
+        const chip = inp.closest(".chip");
+        if (inp.type === "radio") {
+          chip.parentElement.querySelectorAll(".chip").forEach(c=> c.classList.remove("selected"));
+          if (inp.checked) chip.classList.add("selected");
+        } else {
+          chip.classList.toggle("selected", inp.checked);
+        }
+      });
+    });
+
+    /* ===== Otros + exclusividad Ninguna ===== */
+    const otrosChip = $("#otrosChip");
+    const otrosField = $("#otrosField");
+    const alergiasInputs = $$('input[name="alergias"]');
+    const ninguna = alergiasInputs.find(i=> i.value === "Ninguna");
+    const otrosInput = otrosChip ? otrosChip.querySelector("input") : null;
+
+    if (otrosInput && otrosField) {
+      const syncOtros = () => { otrosField.style.display = otrosInput.checked ? "block" : "none"; };
+      otrosInput.addEventListener("change", syncOtros);
+      syncOtros();
+    }
+
+    if (ninguna) {
+      alergiasInputs.forEach(inp=>{
+        inp.addEventListener("change", ()=>{
+          if (inp === ninguna && ninguna.checked) {
+            alergiasInputs.forEach(i=>{
+              if (i !== ninguna) {
+                i.checked = false;
+                i.closest(".chip")?.classList.remove("selected");
+              }
+            });
+            if (otrosInput) {
+              otrosInput.checked = false;
+              otrosField.style.display = "none";
+              otrosChip.classList.remove("selected");
+            }
+          } else if (inp !== ninguna && inp.checked) {
+            ninguna.checked = false;
+            ninguna.closest(".chip")?.classList.remove("selected");
+          }
+        });
+      });
+    }
+
+    /* ===== Navegación / progreso ===== */
+    const steps = $$(".step");
+    const bar = $("#bar");
+    let idx = 0;
+    const show = i => {
+      steps.forEach(s=> s.classList.remove("active"));
+      steps[i].classList.add("active");
+      bar.style.width = Math.round(i/(steps.length-1)*100) + "%";
+      idx = i;
+      window.scrollTo({top:0, behavior:"smooth"});
+      if (i === 5) pintarResumen();
+    };
+
+    $$("[data-next]").forEach(b=> b.addEventListener("click", ()=>{
+      if (!validar(idx)) return;
+      show(Math.min(idx+1, steps.length-1));
+    }));
+    $$("[data-prev]").forEach(b=> b.addEventListener("click", ()=> show(Math.max(idx-1, 0))));
+    $("#startBtn").addEventListener("click", ()=> { if (!validar(0)) return; show(1); });
+
+    const validar = i => {
+      if (i===0 && !$("#nombre").value.trim()) { showToast("Por favor, dinos tu nombre."); return false; }
+      if (i===1 && !document.querySelector('input[name="otono"]:checked')) { showToast("Elige una opción de otoño."); return false; }
+      if (i===2 && !document.querySelector('input[name="alergias"]:checked')) { showToast("Selecciona al menos una opción (puede ser 'Ninguna')."); return false; }
+      return true;
+    };
+
+    /* ===== Datos / resumen ===== */
+    const getData = () => {
+      const alergiasSel = $$('input[name="alergias"]:checked').map(i=> i.value);
+      const otrosTxt = $("#otrosTxt")?.value.trim() || "";
+      const alergias = alergiasSel.includes("Ninguna")
+        ? ["Ninguna"]
+        : alergiasSel.map(a => (a === "Otros" && otrosTxt ? `Otros: ${otrosTxt}` : a));
+      return {
+        timestamp: new Date().toISOString(),
+        nombre: $("#nombre").value.trim(),
+        contacto: $("#contacto").value.trim(),
+        preferencia_otono: (document.querySelector('input[name="otono"]:checked')||{}).value || "",
+        alergias: alergias.join(", "),
+        no_me_gusta: $("#noMeGusta").value.trim(),
+        manias: $("#manias").value.trim()
+      };
+    };
+
+    const pintarResumen = () => {
+      const d = getData();
+      $("#resumen").innerHTML = `
+        <div><strong>Nombre:</strong> ${d.nombre || "—"}</div>
+        ${d.contacto ? `<div><strong>Contacto:</strong> ${d.contacto}</div>` : ""}
+        <div><strong>Otoño:</strong> ${d.preferencia_otono || "—"}</div>
+        <div><strong>Alergias/intolerancias:</strong> ${d.alergias || "—"}</div>
+        <div><strong>No me gusta:</strong> ${d.no_me_gusta || "—"}</div>
+        <div><strong>Manías / notas:</strong> ${d.manias || "—"}</div>
+      `;
+    };
+
+    /* ===== Envío ===== */
+    $("#submitBtn").addEventListener("click", async ()=>{
+      const feedback = $("#feedback");
+      const payload = getData();
+      feedback.textContent = "Enviando...";
+
+      try{
+        const r = await fetch(GAS_ENDPOINT, {
+          method:"POST",
+          headers:{"Content-Type":"application/json"},
+          body: JSON.stringify(payload)
+        });
+        if (!r.ok) throw new Error("Respuesta no OK");
+        await r.json().catch(()=>({status:"ok"}));
+        feedback.textContent = "✅ ¡Listo! Tus preferencias llegaron a E&V. ¡Gracias!";
+      }catch(err){
+        try{
+          await fetch(GAS_ENDPOINT, {
+            method:"POST", mode:"no-cors",
+            headers:{"Content-Type":"text/plain"},
+            body: JSON.stringify(payload)
+          });
+          feedback.textContent = "✅ ¡Listo! (modo compatibilidad). Revisa la hoja para confirmar.";
+        }catch(err2){
+          console.error(err2);
+          feedback.textContent = "❌ No se pudo enviar. Revisa la publicación y permisos del Web App.";
+        }
+      }
+    });
+
+    show(0);
+  });
+  </script>
+</body>
+</html>
