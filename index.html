@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Ven a cenar conmigo · E&V — Otoño Gourmet</title>
+  <title>Ven a cenar conmigo · V&E — Otoño Gourmet</title>
   <meta name="theme-color" content="#3b2a22" />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
 
@@ -94,9 +94,9 @@
 
   <header class="hero">
     <div class="brand">Ven a cenar conmigo · <em>Otoño Gourmet</em></div>
-    <div class="sub">Minijuego de bienvenida — estética elegante, sabores de temporada</div>
-    <div class="hosts">Anfitriones: <strong>E&amp;V</strong></div>
-    <div class="date">La cena: día 9</div>
+    <div class="sub">Minijuego de bienvenida</div>
+    <div class="hosts">Anfitriones: <strong>V&amp;E</strong></div>
+    <div class="date">La cena: día 8</div>
   </header>
 
   <main class="card" role="main">
@@ -109,7 +109,7 @@
         <p class="q-help">Tus elecciones sellarán tu destino culinario.</p>
         <div class="field">
           <label for="nombre">Tu nombre</label>
-          <input id="nombre" placeholder="Ej.: Lucía" required />
+          <input id="nombre" placeholder="Ej.: Adri" required />
         </div>
         <div class="field">
           <label for="contacto">Contacto (opcional)</label>
@@ -120,21 +120,37 @@
         </div>
       </section>
 
-      <!-- Paso 1 -->
-      <section class="step" data-step="1">
-        <h2 class="q-title">Las sombras del sabor</h2>
-        <p class="q-help">Cuando llega el otoño, ¿qué prefieres?</p>
-        <div class="grid">
-          <label class="chip"><input type="radio" name="otono" value="Guisos calientes"><span class="emoji">🍲</span> Guisos calientes</label>
-          <label class="chip"><input type="radio" name="otono" value="Ensaladas ligeras"><span class="emoji">🥗</span> Ensaladas ligeras</label>
-          <label class="chip"><input type="radio" name="otono" value="Tapas con vino"><span class="emoji">🍷</span> Tapas con vino</label>
-          <label class="chip"><input type="radio" name="otono" value="Sorpresa del chef"><span class="emoji">🎩</span> Sorpresa del chef</label>
-        </div>
-        <div class="actions">
-          <button class="btn" data-prev>Volver</button>
-          <button class="btn primary" data-next>Siguiente</button>
-        </div>
-      </section>
+<!-- Paso 1 -->
+<section class="step" data-step="1">
+  <h2 class="q-title">Las sombras del sabor</h2>
+  <p class="q-help">Cuando llega el otoño... ¿qué poder culinario despierta en ti?</p>
+  <div class="grid">
+    <label class="chip">
+      <input type="radio" name="otono" value="Caldero mágico que te hace irresistible">
+      <span class="emoji">🧙‍♂️</span> Un caldero mágico que te hace irresistible
+    </label>
+    <label class="chip">
+      <input type="radio" name="otono" value="Pies en mantita y sopa que cura el alma">
+      <span class="emoji">🧦</span> Pies en mantita y sopa que cura el alma
+    </label>
+    <label class="chip">
+      <input type="radio" name="otono" value="Tapa mística con vino que hace hablar hasta al más callado">
+      <span class="emoji">🍷</span> Tapa mística con vino que hace hablar hasta al más callado
+    </label>
+    <label class="chip">
+      <input type="radio" name="otono" value="Ensalada ligera para que nadie sospeche tus poderes">
+      <span class="emoji">🥗</span> Ensalada ligera para que nadie sospeche tus poderes
+    </label>
+    <label class="chip">
+      <input type="radio" name="otono" value="Sorpresa del chef que altera el destino">
+      <span class="emoji">🎩</span> Sorpresa del chef que altera el destino
+    </label>
+  </div>
+  <div class="actions">
+    <button class="btn" data-prev>Volver</button>
+    <button class="btn primary" data-next>Siguiente</button>
+  </div>
+</section>
 
       <!-- Paso 2 -->
       <section class="step" data-step="2">
@@ -180,7 +196,7 @@
       <section class="step" data-step="5">
         <h2 class="q-title">Tu destino culinario</h2>
         <div class="score" id="resumen"></div>
-        <p class="hint">Al pulsar “Enviar”, tus respuestas llegarán a E&V.</p>
+        <p class="hint">Al pulsar “Enviar”, tus respuestas llegarán a V&E.</p>
         <div class="actions"><button class="btn" data-prev>Volver</button><button class="btn primary" id="submitBtn">Enviar mi destino</button></div>
         <p class="hint" id="feedback"></p>
       </section>
@@ -188,7 +204,7 @@
     </div>
   </main>
 
-  <div class="footer">© Ven a cenar conmigo · E&V — Otoño Gourmet</div>
+  <div class="footer">© Ven a cenar conmigo · V&E — Otoño Gourmet</div>
   <div id="toast" class="toast"></div>
 
   <script>
@@ -320,7 +336,7 @@
         });
         if (!r.ok) throw new Error("Respuesta no OK");
         await r.json().catch(()=>({status:"ok"}));
-        feedback.textContent = "✅ ¡Listo! Tus preferencias llegaron a E&V. ¡Gracias!";
+        feedback.textContent = "✅ ¡Listo! Tus preferencias llegaron a V&E. ¡Gracias!";
       }catch(err){
         try{
           await fetch(GAS_ENDPOINT, {
@@ -328,10 +344,10 @@
             headers:{"Content-Type":"text/plain"},
             body: JSON.stringify(payload)
           });
-          feedback.textContent = "✅ ¡Listo! (modo compatibilidad). Revisa la hoja para confirmar.";
+          feedback.textContent = "✅ ¡Listo! Revisa la hoja para confirmar.";
         }catch(err2){
           console.error(err2);
-          feedback.textContent = "❌ No se pudo enviar. Revisa la publicación y permisos del Web App.";
+          feedback.textContent = "❌ No se pudo enviar. ";
         }
       }
     });
